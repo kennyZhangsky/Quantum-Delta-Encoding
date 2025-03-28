@@ -180,7 +180,7 @@ def encode_state2():
 #  state3 的电路
 @qml.qnode(dev3)
 def encode_state3():
-    for i in range(1, 6):
+    for i in range(1, 7):
         qml.Hadamard(wires=i)
     # n1: '001100'
     qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
@@ -438,7 +438,7 @@ for level in noise_levels:
     #  state3 (dev2) 
     @qml.qnode(dev3)
     def phase_shift_noise_state3():
-        for i in range(1, 6):
+        for i in range(1, 7):
             qml.Hadamard(wires=i)
         # n1: '001100'
         qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
@@ -680,7 +680,7 @@ for level in noise_levels:
     # 针对 state3 (dev2)
     @qml.qnode(dev3)
     def amplitude_damping_noise_state3():
-        for i in range(1, 6):
+        for i in range(1, 7):
             qml.Hadamard(wires=i)
         # n1: '001100'
         qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
