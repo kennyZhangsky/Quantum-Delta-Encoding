@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import pennylane as qml
 import math
 
-
-
 # noise comparison of QDE and BRQI and CE-NGQR, denoted as state, state2 and state3. detailed circuit construction please refer to their references.
 
 # font size setting
@@ -14,7 +12,12 @@ fontsize_ylabel = 24
 fontsize_ticks = 20
 fontsize_legend = 20
 
-
+control_patterns = [
+        "001100", "001010", "000110", "001110", "000001", "001001", "000101",
+        "100000", "101100", "101010", "100110", "101110", "100001", "101001", "100101",
+        "011000", "011100", "011010", "010110", "011110", "010001", "011001", "010101",
+        "110000", "111000", "111100", "111010", "110110", "111110", "110001", "111001", "110101"
+    ]
 
 # qde state init
 state = np.array([1 / math.sqrt(8), 0, 1 / math.sqrt(8), 0, 1 / math.sqrt(8), 1 / math.sqrt(8), 0, 0,
@@ -28,228 +31,36 @@ n_qubits3 = 8
 dev1 = qml.device("default.mixed", wires=n_qubits1)
 dev2 = qml.device("default.mixed", wires=n_qubits2)
 dev3 = qml.device("default.mixed", wires=n_qubits3)
-#  state circuit
+#  state1 circuit
 @qml.qnode(dev1)
 def encode_state():
     qml.AmplitudeEmbedding(state, wires=range(n_qubits1), normalize=True)
     return qml.state()
 
-# state2 circuit
+# state2 and 3 circuit
+
 @qml.qnode(dev2)
 def encode_state2():
     for i in range(1, 7):
         qml.Hadamard(wires=i)
-    # n1: '001100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-    # n2: '001010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-    # n3: '000110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-    # n4: '001110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-    # n5: '000001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-    # n6: '001001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-    # n7: '000101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
-
-    # n02: '100000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-    # n12: '101100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-    # n22: '101010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-    # n32: '100110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-    # n42: '101110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-    # n52: '100001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-    # n62: '101001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-    # n72: '100101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-    # n03: '011000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-    # n13: '011100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-    # n23: '011010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-    # n33: '010110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-    # n43: '011110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-    # n53: '010001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-    # n63: '011001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-    # n73: '010101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-    # n04: '110000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-    # n041: '111000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-    # n14: '111100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-    # n24: '111010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-    # n34: '110110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-    # n44: '111110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-    # n54: '110001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-    # n64: '111001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-    # n74: '110101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-
-
-    # n1: '001100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 0, 0])
-    # n2: '001010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 1, 0])
-    # n3: '000110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 1, 0])
-    # n4: '001110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 1, 0])
-    # n5: '000001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 0, 0, 1])
-    # n6: '001001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 0, 1])
-    # n7: '000101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 0, 1])
-
-    # n02: '100000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 0])
-    # n12: '101100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 0, 0])
-    # n22: '101010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 1, 0])
-    # n32: '100110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 1, 0])
-    # n42: '101110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 1, 0])
-    # n52: '100001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 1])
-    # n62: '101001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 0, 1])
-    # n72: '100101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 0, 1])
-
-    # n03: '011000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 0])
-    # n13: '011100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 0, 0])
-    # n23: '011010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 1, 0])
-    # n33: '010110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 1, 0])
-    # n43: '011110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 1, 0])
-    # n53: '010001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 0, 0, 1])
-    # n63: '011001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 1])
-    # n73: '010101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 0, 1])
-
-    # n04: '110000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 0])
-    # n041: '111000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 0])
-    # n14: '111100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 0, 0])
-    # n24: '111010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 1, 0])
-    # n34: '110110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 1, 0])
-    # n44: '111110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 1, 0])
-    # n54: '110001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 1])
-    # n64: '111001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 1])
-    # n74: '110101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 0, 1])
+    for target in [0, 7]:  
+        for pattern in control_patterns:
+            control_wires = [1, 2, 3, 4, 5, 6]
+            control_values = [int(bit) for bit in pattern]
+            qml.MultiControlledX(control_wires=control_wires, wires=[target], control_values=control_values)
     return qml.state()
 
-#  state3 的电路
+
 @qml.qnode(dev3)
 def encode_state3():
     for i in range(1, 7):
         qml.Hadamard(wires=i)
-    # n1: '001100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-    # n2: '001010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-    # n3: '000110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-    # n4: '001110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-    # n5: '000001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-    # n6: '001001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-    # n7: '000101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
 
-    # n02: '100000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-    # n12: '101100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-    # n22: '101010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-    # n32: '100110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-    # n42: '101110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-    # n52: '100001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-    # n62: '101001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-    # n72: '100101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
+    for control_values in control_patterns:
+        controls = [int(c) for c in control_values]  
+        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=0, control_values=controls)
 
-    # n03: '011000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-    # n13: '011100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-    # n23: '011010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-    # n33: '010110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-    # n43: '011110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-    # n53: '010001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-    # n63: '011001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-    # n73: '010101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-    # n04: '110000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-    # n041: '111000'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-    # n14: '111100'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-    # n24: '111010'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-    # n34: '110110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-    # n44: '111110'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-    # n54: '110001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-    # n64: '111001'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-    # n74: '110101'
-    qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-    qml.RY(np.pi/2,wires=[7])
+    qml.RY(np.pi / 2, wires=7)
     return qml.state()
 
 # flatten
@@ -293,141 +104,13 @@ for level in noise_levels:
     def phase_shift_noise_state2():
         for i in range(1, 7):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
 
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
+        for target in [0, 7]:  
+            for pattern in control_patterns:
+                control_wires = [1, 2, 3, 4, 5, 6]
+                control_values = [int(bit) for bit in pattern]
+                qml.MultiControlledX(control_wires=control_wires, wires=[target], control_values=control_values)
 
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 0, 1])
-
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 0, 1])
         for i in range(n_qubits2):
             qml.PhaseShift(level, wires=i)
         return qml.state()
@@ -440,74 +123,13 @@ for level in noise_levels:
     def phase_shift_noise_state3():
         for i in range(1, 7):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
+        
+        for control_values in control_patterns:
+            controls = [int(c) for c in control_values]
+            qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=0, control_values=controls)
+        
+        qml.RY(np.pi / 2, wires=7)
 
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-        qml.RY(np.pi / 2, wires=[7])
         for i in range(n_qubits3):
             qml.PhaseShift(level, wires=i)
         return qml.state()
@@ -535,141 +157,12 @@ for level in noise_levels:
     def amplitude_damping_noise_state2():
         for i in range(1, 7):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
 
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 0, 1])
-
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 0, 1])
+        for target in [0, 7]:  
+            for pattern in control_patterns:
+                control_wires = [1, 2, 3, 4, 5, 6]
+                control_values = [int(bit) for bit in pattern]
+                qml.MultiControlledX(control_wires=control_wires, wires=[target], control_values=control_values)
         for i in range(n_qubits2):
             qml.AmplitudeDamping(level, wires=i)
         return qml.state()
@@ -682,73 +175,10 @@ for level in noise_levels:
     def amplitude_damping_noise_state3():
         for i in range(1, 7):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
-
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
+        
+        for control_values in control_patterns:
+            controls = [int(c) for c in control_values]
+            qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=0, control_values=controls)
         qml.RY(np.pi / 2, wires=[7])
         for i in range(n_qubits3):
             qml.AmplitudeDamping(level, wires=i)
@@ -779,141 +209,12 @@ for level in noise_levels1:
     def depolarizing_noise_state2():
         for i in range(1, 7):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
 
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
-
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 0, 0, 1, 0, 1])
-
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[7], control_values=[1, 1, 0, 1, 0, 1])
+        for target in [0, 7]:  
+            for pattern in control_patterns:
+                control_wires = [1, 2, 3, 4, 5, 6]
+                control_values = [int(bit) for bit in pattern]
+                qml.MultiControlledX(control_wires=control_wires, wires=[target], control_values=control_values)
         for i in range(n_qubits2):
             qml.DepolarizingChannel(level, wires=i)
         return qml.state()
@@ -926,73 +227,10 @@ for level in noise_levels1:
     def depolarizing_noise_state3():
         for i in range(1, 6):
             qml.Hadamard(wires=i)
-        # n1: '001100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 0, 0])
-        # n2: '001010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 1, 0])
-        # n3: '000110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 1, 0])
-        # n4: '001110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 1, 1, 0])
-        # n5: '000001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 0, 0, 1])
-        # n6: '001001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 1, 0, 0, 1])
-        # n7: '000101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 0, 0, 1, 0, 1])
-
-        # n02: '100000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 0])
-        # n12: '101100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 0, 0])
-        # n22: '101010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 1, 0])
-        # n32: '100110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 1, 0])
-        # n42: '101110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 1, 1, 0])
-        # n52: '100001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 0, 0, 1])
-        # n62: '101001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 1, 0, 0, 1])
-        # n72: '100101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 0, 0, 1, 0, 1])
-
-        # n03: '011000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 0])
-        # n13: '011100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 0, 0])
-        # n23: '011010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 1, 0])
-        # n33: '010110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 1, 0])
-        # n43: '011110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 1, 1, 0])
-        # n53: '010001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 0, 0, 1])
-        # n63: '011001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 1, 0, 0, 1])
-        # n73: '010101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[0, 1, 0, 1, 0, 1])
-
-        # n04: '110000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 0])
-        # n041: '111000'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 0])
-        # n14: '111100'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 0, 0])
-        # n24: '111010'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 1, 0])
-        # n34: '110110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 1, 0])
-        # n44: '111110'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 1, 1, 0])
-        # n54: '110001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 0, 0, 1])
-        # n64: '111001'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 1, 0, 0, 1])
-        # n74: '110101'
-        qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=[0], control_values=[1, 1, 0, 1, 0, 1])
+        
+        for control_values in control_patterns:
+            controls = [int(c) for c in control_values]
+            qml.MultiControlledX(control_wires=[1, 2, 3, 4, 5, 6], wires=0, control_values=controls)
         qml.RY(np.pi / 2, wires=[7])
         for i in range(n_qubits3):
             qml.DepolarizingChannel(level, wires=i)
@@ -1051,3 +289,4 @@ plt.grid(True, which='both', linestyle='--', linewidth=0.5, color='gray')
 plt.legend(fontsize=fontsize_legend)
 plt.savefig("depolarizing_noise.png", dpi=300, bbox_inches='tight')
 plt.show()
+
