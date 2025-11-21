@@ -225,7 +225,7 @@ for level in noise_levels1:
     #  state3 (dev2)
     @qml.qnode(dev3)
     def depolarizing_noise_state3():
-        for i in range(1, 6):
+        for i in range(1, 7):
             qml.Hadamard(wires=i)
         
         for control_values in control_patterns:
